@@ -1,2 +1,2 @@
 # blog
-python博客系统
+flask新闻系统
