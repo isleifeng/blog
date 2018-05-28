@@ -1,5 +1,6 @@
 import redis
 from flask import Flask, session
+from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
@@ -26,12 +27,13 @@ class Config(object):
     SESSION_USE_SIGNER = True  # 开启签名,保证数据安全
     SESSION_PERMANENT = 3600 * 24 * 7  # 设置session过期时间
 
+    DEBUG = True
+
 
 
 app = Flask(__name__)
 app.config.from_object(Config)
-app.debug = True
-manager = Manager(app)
+
 
 # 插件数据库
 db = SQLAlchemy(app)
@@ -44,6 +46,15 @@ CSRFProtect(app)
 
 # 设置Flask-Session扩展， 将存在浏览器中的session数据， 同步到服务器指定的地址中（一般用redis储存）
 Session(app)
+
+# 创建 manager
+manager = Manager(app)
+
+# 创建迁移对象
+Migrate(app, db)
+
+# 给manager绑定迁移命令
+manager.add_command('db', MigrateCommand)
 
 @app.route('/')
 def index():
