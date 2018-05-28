@@ -14,12 +14,6 @@ Migrate(app, db)
 # 给manager绑定迁移命令
 manager.add_command('db', MigrateCommand)
 
-
-@app.route('/')
-def index():
-    # session['name'] = 'zhangsan'
-    return 'hello flask'
-
-
 if __name__ == '__main__':
+    print(manager.app.url_map)
     manager.run()

@@ -9,6 +9,10 @@ from flask_session import Session
 
 db = SQLAlchemy()
 
+# 定义空redis存储对象
+redis_store = None
+
+
 # 提供一个函数, 工厂方法,方便根据不同的成熟, 实现不同的配置加载
 def create_app(config_name):
     # 配置项目日志
@@ -21,6 +25,7 @@ def create_app(config_name):
     db.init_app(app)
 
     # 创建redis对象
+    global redis_store
     redis_store = redis.Redis(host=config_name.REDIS_HOST, port=config_name.REDIS_PORT)
 
     # 开启CSRF保护 -> 开启csrf_token对比机制, 需要设置SECRET_KEY
@@ -29,7 +34,12 @@ def create_app(config_name):
     # 设置Flask-Session扩展， 将存在浏览器中的session数据， 同步到服务器指定的地址中（一般用redis储存）
     Session(app)
 
+    # 注册蓝图
+    from .apps.index import index
+    app.register_blueprint(index)
+
     return app
+
 
 def setup_log(config_name):
     # 设置日志的记录等级
