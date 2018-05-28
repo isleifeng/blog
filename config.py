@@ -1,8 +1,8 @@
+import logging
 import redis
 
 
 class Config(object):
-
     # 配置SQLALchemy
     SQLALCHEMY_DATABASE_URI = 'mysql://root:mysql@127.0.0.1/infomation'
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # 是否追踪改变
@@ -22,4 +22,19 @@ class Config(object):
     SESSION_USE_SIGNER = True  # 开启签名,保证数据安全
     SESSION_PERMANENT = 3600 * 24 * 7  # 设置session过期时间
 
+
+class DevlopmentConfig(Config):
+    """
+    开发模式下的配置
+    """
     DEBUG = True
+    LOG_LEVEL = logging.DEBUG
+
+
+class ProductionConfig(Config):
+    """
+    生产模式下的配置
+    """
+    LOG_LEVEL = logging.WARNING
+
+    pass
